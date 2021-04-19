@@ -1,0 +1,15 @@
+server:
+  port: 0 #0번포트는 랜덤 포
+  
+spring:
+  application:
+    name: user-service
+    
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}} #가본값일경우 클라이언트 포트를 0(랜덤포)으로 했을때 하나의 인스턴스만 표현한
+  client:
+    register-with-eureka: true #유레카에 등
+    fetch-registry: true #외부에서 검색 가능하도
+    service-url:
+      defaultZon: http://127.0.0.1:8761/eureka     
