@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +26,6 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder pwdEncoder) {
-		// TODO Auto-generated constructor stub
 		this.userRepository = userRepository;
 		this.pwdEncoder = pwdEncoder; 
 	}
@@ -45,7 +46,6 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public UserDto getUserByUserId(String userId) {
-		// TODO Auto-generated method stub
 		UserEntity userEntity = userRepository.findByUserId(userId);
 		
 		if(userEntity == null) {
@@ -62,8 +62,29 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public Iterable<UserEntity> getUserByAll() {
-		// TODO Auto-generated method stub
 		return userRepository.findAll();
+	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		UserEntity userEntity = userRepository.findByEmail(email);
+		if(userEntity == null) {
+			throw new UsernameNotFoundException(email);
+		}
+		return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(), true, true, true, true, new ArrayList<>());
+		
+	}
+	
+	@Override
+	public UserDto getUserDetailsByEmail(String userEmail) {
+		UserEntity userEntity = userRepository.findByEmail(userEmail);
+		
+		if(userEntity == null) {
+			throw new UsernameNotFoundException(userEmail);
+		}
+		
+		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+		return userDto;
 	}
 	
 	
