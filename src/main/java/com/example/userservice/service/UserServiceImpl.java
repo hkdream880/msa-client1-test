@@ -55,6 +55,10 @@ public class UserServiceImpl implements UserService{
 		UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 		
 		List<ResponseOrder> orders = new ArrayList<ResponseOrder>();
+		
+		//order 정보 요청 start
+		
+		//order 정보 요청 end
 		userDto.setOrders(orders);
 		
 		return userDto;
